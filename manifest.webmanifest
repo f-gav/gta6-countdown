@@ -1,17 +1,30 @@
 {
-  "name": "Миша × GTA VI — Countdown",
-  "short_name": "GTA VI · Миша",
+  "id": "./",
+  "name": "GTA VI — Мишин отсчёт",
+  "short_name": "GTA VI",
+  "description": "Обратный отсчёт до GTA VI и оставшиеся пары по московскому времени",
+  "lang": "ru",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#170d24",
-  "theme_color": "#311535",
+  "display_override": [
+    "standalone"
+  ],
+  "orientation": "any",
+  "background_color": "#311535",
+  "theme_color": "#753b7e",
   "icons": [
     {
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
