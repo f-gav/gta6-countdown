@@ -13,45 +13,32 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import json, urllib.request, urllib.error, time, sys
-          names = ["KoHTpaMapKa","KoHTpaKTypa","KoHCeHCyc","KoHCePBaTop","KoHcTpyKTuB","KoMMyHuKaTop","KoMMeHTaTop","KoMMyHuCT","KoPoHoBaHue","KoPoHeP","KoPceTuK","KoCMeTuKa","KoBapCTBo","KoCoBoPoTKa","KoHBePTuK","KoHTeKCT","KoHTyp","KaPaKypT","KaPaHTuH","KaPaBaH","KaHBaC","KaHTaTa","KaHTuK","KaXoH","KaMeHKa","CeKPeTuK","CeMecTp","CePBucHuK","CePBaHT","CePBeP","CeKPeT","CTpaHHocTb","CTpaHcTBue","CTpaToCTaT","CTaTucTuKa","CTaTucTuK","CTepX","CTapTep","CMeTaHKa","CMeXoTa","CMeTHuK","BecTHuK","BePCTaK","BePecK","BaPBaPCTBo","BaXTeP","CaMoBapHuK","CaMoCeB","CoXpaHHoCTb","CoCuCKa"]
-          control = ["Notch", "jeb_", "VeryRareNotTakenZ9"]
-          bases = [
-              "https://api.minecraftservices.com/minecraft/profile/lookup/bulk/byname",
-              "https://api.mojang.com/profiles/minecraft",
-          ]
-          def batch(xs):
-              for base in bases:
-                  req = urllib.request.Request(base, json.dumps(xs).encode(), {"User-Agent": "minecraft-name-audit/1.0", "Content-Type": "application/json", "Accept": "application/json"}, method="POST")
-                  for attempt in range(3):
-                      try:
-                          with urllib.request.urlopen(req,timeout=22) as response:
-                              data = json.load(response)
-                              assert isinstance(data, list), type(data)
-                              return (base,data)
-                      except Exception as e:
-                          print(f"CHECK_ERROR|{base}|{type(e).__name__}|{str(e)[:130]}",flush=True)
-                          time.sleep(2*(attempt+1))
-              return (None,None)
-          found = set()
-          unknown = []
-          for start in range(0,len(names)+len(control),10):
-              chunk = (control + names)[start:start+10]
-              base, items = batch(chunk)
-              if items is None:
-                  unknown.extend(chunk)
-                  continue
-              these = {str(x.get("name","")).casefold() for x in items}
-              found.update(these)
-              print("BATCH_OK|"+str(start//10)+"|"+base+"|found="+",".join(sorted(these)),flush=True)
-          for x in control + names:
-              status = "UNCHECKED" if x in unknown else ("TAKEN" if x.casefold() in found else "NO_PROFILE")
-              print("RESULT|"+x+"|"+status,flush=True)
-          if "notch" not in found or "jeb_" not in found:
-              print("ERROR: known positive controls not found!",flush=True)
-              sys.exit(2)
-          if unknown:
-              print("ERROR: batch failures:",unknown,flush=True)
-              sys.exit(3)
-          print("SUMMARY|TOTAL="+str(len(names))+"|TAKEN="+str(sum(x.casefold() in found for x in names))+"|NO_PROFILE="+str(sum(x.casefold() not in found for x in names)),flush=True)
+          import json, urllib.request, time, sys
+          names = ["KaPToTeKa","KaPToHKa","KaPToH","KoMMyHa","KoMMyHaPb","KoMMeHTaPuu","PeCTaBPaTop","PeCToPaH","PeCToPaTop","PeKToP","PeKToPaT","CTaKaHuK","CTaHuHa","CTaTuCT","CTaTuKa","CTePHa","CaXapHuK","CaXapHocTb","BaHHuK","BaPeHKa","BoCKoBKa","BoCKoBHuK","BoCCTaHue","BoCKPeCeHue","BoPcuHKa","BoPcoBKa","BoPoHeHoK","MoXoBuK","MoPeMaH","MoPcuK","KyPeBo","KyPeHue","KyPeHb","KyCaKa","KyCaHue","KyCTapHuK","KyCTapCTBo","KyCTuCTocTb","KyXapKa","KyXapCTBo","PyCuCT","PyCuCTuKa","PyKaBuK","TeXHuKyM","TeXHoKpaT","TePpaca","TePPaPuyM","TePPopucT","TePPopucTKa","BaHTa","BoCK","CaMoKaT","CTeHKa","CTaKaH","CTaPuK","CTapocTb","CaHoBHuK","CaHuTaP","CaHuTaPKa","KoCaTKa","KaCaTKa","KoCaPb","KaCaHue","KaTaKoMBa","KaTaPaKTa","KaTapCuC","KaTaHa","KaTaHKa","KaTaHue","KaTaToHuK"]
+          control = ["Notch", "jeb_"]
+          base = "https://api.minecraftservices.com/minecraft/profile/lookup/bulk/byname"
+          found, failed = set(), []
+          allnames = control + names
+          for idx in range(0,len(allnames),10):
+              chunk = allnames[idx:idx+10]
+              for attempt in range(3):
+                  try:
+                      req = urllib.request.Request(base,json.dumps(chunk).encode(),{"User-Agent":"minecraft-audit/1.0","Content-Type":"application/json"},method="POST")
+                      with urllib.request.urlopen(req,timeout=15) as resp:
+                          items = json.load(resp)
+                      if not isinstance(items,list): raise ValueError("non-list")
+                      batch = {x["name"].lower() for x in items}
+                      found |= batch
+                      print(f"BATCH_OK|{idx//10}|"+",".join(sorted(batch)),flush=True)
+                      break
+                  except Exception as e:
+                      print(f"BATCH_ERROR|{idx//10}|{str(e)[:120]}",flush=True)
+                      if attempt<2: time.sleep(1)
+              else: failed.extend(chunk)
+          for n in names:
+              status = "ERROR" if n in failed else "TAKEN" if n.lower() in found else "NO_PROFILE"
+              print(f"RESULT|{n}|{status}",flush=True)
+          print(f"SUMMARY|{len(names)}|{sum(x.lower() in found for x in names)}|{len(failed)}",flush=True)
+          if not set(x.lower() for x in control) <= found: sys.exit(2)
+          if failed: sys.exit(3)
           PY
