@@ -1,0 +1,9 @@
+{
+  "new_correct_nominative": 130,
+  "prior_clean": 2822,
+  "combined": 2952,
+  "removed_from_new": "CayPoHa (genitive of Саурон)",
+  "removed_from_old": "aKTePa (not a nominative proper name)",
+  "status": "NO_PROFILE; does not guarantee claimability",
+  "verified_run": "https://github.com/f-gav/gta6-countdown/actions/runs/43941357597"
+}
