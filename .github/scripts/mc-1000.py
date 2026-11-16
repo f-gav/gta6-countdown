@@ -2,8 +2,8 @@ import re, json, collections, time, urllib.request, urllib.error, sys
 from wordfreq import top_n_list
 import pymorphy3
 
-ALPHABET="абвеикмнорстух"
-MAPPING=dict(zip(ALPHABET, ["a","b","B","e","u","K","M","H","o","P","C","T","y","X"]))
+ALPHABET="авезикмнорстух"
+MAPPING=dict(zip(ALPHABET, ["a","B","e","3","u","K","M","H","o","P","C","T","y","X"]))
 VALID=re.compile("^["+ALPHABET+"]{3,16}$")
 TARGET=1000
 morph=pymorphy3.MorphAnalyzer()
