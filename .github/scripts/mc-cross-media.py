@@ -103,7 +103,7 @@ candidates={}
 def add(word,category,source,orig):
     word=word.lower().replace("ё","е")
     if word in BAD or not PAT.fullmatch(word):return
-    nick="".join(M[c] for c in word)
+    nick="".join(MAP[c] for c in word)
     if nick.casefold() in previous:return
     key=nick.casefold()
     if key not in candidates:
