@@ -1,22 +1,33 @@
-name: Minecraft nominative strict candidates analysis
+name: Minecraft nominative-only verified usernames
 on:
   push:
     branches: [name-audit-20261116]
     paths-ignore:
       - "out/**"
 permissions:
-  contents: read
+  contents: write
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Install Russian morphology and frequency dictionaries
         run: python -m pip install --disable-pip-version-check wordfreq pymorphy3
-      - name: Analyze nominative-only Russian nouns with strict glyphs
+      - name: Check all nominative nouns against Minecraft public profile lookup
         run: python .github/scripts/mc-nominative.py
+      - name: Publish verified outputs to isolated GitHub branch
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add out/nominative_candidates.tsv out/nominative_verified_nicks.txt out/nominative_verified_words.tsv out/nominative_report.json out/nominative_favorites.tsv
+          git commit -m "data: export nominated Russian Minecraft names [skip ci]"
+          git push
       - uses: actions/upload-artifact@v4
         with:
-          name: nominative-candidates
-          path: out/nominative_candidates.tsv
+          name: nominative-minecraft-name-results
+          path: |
+            out/nominative_verified_nicks.txt
+            out/nominative_verified_words.tsv
+            out/nominative_report.json
+            out/nominative_favorites.tsv
