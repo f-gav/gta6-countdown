@@ -1,0 +1,31 @@
+{
+  "date_utc": "2026-11-16T02:25:20Z",
+  "candidate_count": 4335,
+  "checked_count": 4335,
+  "taken_names": 1539,
+  "unchecked_due_to_errors": 0,
+  "no_current_profile": 2796,
+  "initial_distribution": {
+    "а": 227,
+    "в": 160,
+    "е": 16,
+    "з": 179,
+    "и": 133,
+    "к": 431,
+    "м": 273,
+    "н": 164,
+    "о": 150,
+    "р": 204,
+    "с": 478,
+    "т": 230,
+    "у": 73,
+    "х": 78
+  },
+  "nominative_only": true,
+  "parts_of_speech": [
+    "NOUN"
+  ],
+  "includes_plural_nominative": true,
+  "abbreviation_exclusions": "Tag and manual excludes, not exhaustive.",
+  "profile_search_is_not_registration_availability": true
+}
