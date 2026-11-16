@@ -1,4 +1,4 @@
-name: Minecraft media proper name source check
+name: Minecraft extended media-name availability check
 on:
   push:
     branches: [name-audit-20261116]
@@ -6,12 +6,27 @@ on:
       - '.github/scripts/mc-media-source.py'
       - '.github/workflows/mc-name-audit.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
-  collect:
+  audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 28
     steps:
       - uses: actions/checkout@v4
-      - name: Read Russian fictional character names from public encyclopedias
+      - name: Collect sourced fictional names and check existing Minecraft profiles
         run: python .github/scripts/mc-media-source.py
+      - name: Publish results on isolated branch
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add out/expanded_media_new.tsv out/expanded_media_new.txt out/expanded_media_all.txt out/expanded_media_report.json
+          git commit -m "data: checked new media names, excluding occupied profiles [skip ci]"
+          git push
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extended-minecraft-media-names
+          path: |
+            out/expanded_media_new.tsv
+            out/expanded_media_new.txt
+            out/expanded_media_all.txt
+            out/expanded_media_report.json
