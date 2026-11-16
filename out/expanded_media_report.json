@@ -1,0 +1,28 @@
+{
+  "prior_candidates": 2726,
+  "prior_still_no_profile": 2726,
+  "new_media_no_profile": 63,
+  "total_unique_no_profile": 2789,
+  "checked": 2877,
+  "failed": 0,
+  "source_labels": {
+    "curated:Наруто": 19,
+    "curated:One Piece": 7,
+    "curated:Атака титанов": 6,
+    "curated:Клинок, рассекающий демонов": 4,
+    "curated:Магическая битва": 11,
+    "curated:Человек-бензопила": 5,
+    "curated:Тетрадь смерти": 5,
+    "curated:Genshin Impact": 10,
+    "curated:Honkai: Star Rail": 3,
+    "curated:Покемон": 9,
+    "curated:Mario": 2,
+    "curated:Marvel": 8,
+    "curated:Sonic": 2,
+    "curated:Minecraft": 1,
+    "wikipedia:anime": 163,
+    "wikipedia:naruto": 13,
+    "wikidata": 0
+  },
+  "availability": "NO_PROFILE only, not guaranteed AVAILABLE"
+}
