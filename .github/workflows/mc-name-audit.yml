@@ -1,17 +1,32 @@
-name: Minecraft cross-media character category research
+name: Minecraft names from films TV cartoons games anime
 on:
   push:
     branches: [name-audit-20261116]
     paths:
-      - '.github/scripts/mc-media-research.py'
+      - '.github/scripts/mc-cross-media.py'
       - '.github/workflows/mc-name-audit.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
-  discover:
+  audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 9
+    timeout-minutes: 16
     steps:
       - uses: actions/checkout@v4
-      - name: Research Russian Wikipedia character categories across media
-        run: python .github/scripts/mc-media-research.py
+      - name: Collect cross-media character names and verify against Mojang
+        run: python .github/scripts/mc-cross-media.py
+      - name: Save new available-profile-absence results
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add out/cross_media_new.tsv out/cross_media_new.txt out/cross_media_all.txt out/cross_media_report.json
+          git commit -m "data: verified characters from films, series, cartoons and games [skip ci]"
+          git push
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cross-media-minecraft-nicknames
+          path: |
+            out/cross_media_new.tsv
+            out/cross_media_new.txt
+            out/cross_media_all.txt
+            out/cross_media_report.json
