@@ -124,7 +124,7 @@ print("CURATED_SEEDS|"+str(sum(map(len,sources.values()))),flush=True)
 
 q='SELECT ?item ?label WHERE { ?item wdt:P31/wdt:P279* wd:Q95074; rdfs:label ?label. FILTER(LANG(?label)="ru") } LIMIT 10000 OFFSET {}'
 for offset in (0,10000,20000):
-    url="https://query.wikidata.org/sparql?"+urllib.parse.urlencode({"query":q.format(offset),"format":"json"})
+    url="https://query.wikidata.org/sparql?"+urllib.parse.urlencode({"query":q.replace("OFFSET {}",f"OFFSET {offset}"),"format":"json"})
     try:
         data=read_json(url,timeout=115)
         rows=data["results"]["bindings"]
@@ -185,6 +185,8 @@ def check_batch(batch):
 assert {"notch","jeb_"}<=check_batch(["Notch","jeb_"]),"controls unavailable"
 oldpath=OUT/"nominative_verified_nicks.txt"
 oldnames=[x.strip() for x in oldpath.read_text(encoding="utf8").splitlines() if x.strip()] if oldpath.exists() else []
+excludes=set("3aMMuHuCTPa BoeHKoP BoeHPyK BoeHPyKu BoeHTeXHuK BoeHTeXHuKu CoBHaPXo3 KoMCoCTaB KoMMeHT KoMuHTePH KuHoBePCuu KuHoCeTu KuHoCeaHC KuHoKPuTuK KuHoKPuTuKa KuHoKPuTuKu KuHoKaMePa KuHoKaPTuHa KuHoMeXaHuK KuHoMeXaHuKa KuHoMeXaHuKu KuHoTaBP KuHoTeXHuK KuHoTeXHuKa KuHoTeXHuKu KuHoTeaTP KuHoXPoHuKa KuHoXPoHuKu KuHoaKTPuCa KuHoaKTeP KuHoaPXuB KuHouCKyCCTBa KuHouCKyCCTBo KuHoyCTaHoBKa KuHoyCTaHoBKu MoCCoBeT MoCTPaHCaBTo MoCToTPeCT MoToKPoCC TeXoCMoTP aBTo3aK aBTo3aKu aBToBo3 aBToCePBuC aBToKPa3 aBToKPaH aBToKPoCC aBToMaCTePCKue aBToMeXaHuK aBToMeXaHuKu aBToPeMoHT aBToTPaCCa aBToTeXHuK aBToTeXHuKu aBToaBaPuu aBuaCTPoeHue aBuaCTaP aBuaKePoCuH aBuaKoHCTPyKToPa aBuaMeXaHuK aBuaMeXaHuKu aBuaTeXHuK aBuaTeXHuKu eBPo3oHa eBPoCoBeT eBPoKoMuCCaP eBPoKoMuCCuu eBPoPeMoHT uHTePPoC uHTyPuCT".split())
+oldnames=[n for n in oldnames if n not in excludes]
 print("PRIOR_NOUNS|"+str(len(oldnames)),flush=True)
 allnames=list({n.casefold():n for n in [*oldnames,*[x["name"] for x in entries.values()]]}.values())
 print("CHECK_INPUT|"+str(len(allnames)),flush=True)
