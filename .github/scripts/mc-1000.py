@@ -135,7 +135,7 @@ while len(selected)<TARGET:
     if not moved:break
 assert len(selected)==TARGET
 assert len({x[2].casefold() for x in selected})==TARGET
-assert all("b" not in x[2].lower() for x in selected)
+assert all("b" not in x[2] for x in selected)
 assert all(all(c in "aBe3uKMHoPCTyX" for c in x[2]) for x in selected)
 summary = {
     "checked":checks,"no_profile":sum(map(len,good.values()))+len(selected),
