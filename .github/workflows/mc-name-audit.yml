@@ -9,36 +9,48 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - name: Query Mojang public API in 10-name batches
+      - name: Query Minecraft public API and verify candidate words
         shell: bash
         run: |
           python - <<'PY'
           import json, urllib.request, time, sys
-          names = ["KaPToTeKa","KaPToHKa","KaPToH","KoMMyHa","KoMMyHaPb","KoMMeHTaPuu","PeCTaBPaTop","PeCToPaH","PeCToPaTop","PeKToP","PeKToPaT","CTaKaHuK","CTaHuHa","CTaTuCT","CTaTuKa","CTePHa","CaXapHuK","CaXapHocTb","BaHHuK","BaPeHKa","BoCKoBKa","BoCKoBHuK","BoCCTaHue","BoCKPeCeHue","BoPcuHKa","BoPcoBKa","BoPoHeHoK","MoXoBuK","MoPeMaH","MoPcuK","KyPeBo","KyPeHue","KyPeHb","KyCaKa","KyCaHue","KyCTapHuK","KyCTapCTBo","KyCTuCTocTb","KyXapKa","KyXapCTBo","PyCuCT","PyCuCTuKa","PyKaBuK","TeXHuKyM","TeXHoKpaT","TePpaca","TePPaPuyM","TePPopucT","TePPopucTKa","BaHTa","BoCK","CaMoKaT","CTeHKa","CTaKaH","CTaPuK","CTapocTb","CaHoBHuK","CaHuTaP","CaHuTaPKa","KoCaTKa","KaCaTKa","KoCaPb","KaCaHue","KaTaKoMBa","KaTaPaKTa","KaTapCuC","KaTaHa","KaTaHKa","KaTaHue","KaTaToHuK"]
-          control = ["Notch", "jeb_"]
+          words = "контрамарка контрактура консенсус конструктив коммуникатор коммунист коронование коронер корсетик косметика коварство косоворотка конвертик карантин караван канвас кантата кантик кахон каменка семестр сервисник странствие стратостат статистика статистик стерх стартер смехота сметник самоварник самосев сохранность картотека коммуна коммунарь ректорат стаканик станина статист сахарник сахарность восковка восковник восстание воскресение ворсинка ворсовка моховик морсик курень кусание кустарник кустарство кустистость кухарство русист русистика рукавик техникум технократ терраса террариум террористка ванта стенка сановник санитарка косарь касание катарсис катанка катание кататоник самовар сахар сахарок сахаристость самокатник самокатик сановитость канат канатик канатка канатник канатист канатистка контора конторка конторист канва кант кантина камерка камерник камертон каменистость каменотёс окаменение карасик карась караванник карта картинка картина карман карманник карма каретник карета каре карат каратист космос космонавт космонавтика космист косметик косатка костра костёр костерок косинка косинус костник корка корсет корень корма корм кормовик коронка корона коренник коренастость корова коровник коровка короста комета кометник комната комнатка коммерсант коммерс коммент контакт контактор контактник контактность контракт контраст контрастность контур контуровка контрмера консерва консервирование конкурс конкурсант конкурсантка конкурсность конура конурка конник конь конёк коньки конус конусность конусок канун канон каноник канонист канонистка каноника катаракта катакана катана катет катетер каток катер катерок катерник касса кассир каска каскетка кассетник кассета кастет касторка карантинник картавость картавик свет светик светотехника светотехник световик сет сетка сетевик сетование сеттер секта сектант сектантка сектор секатор секрет секретик секретность секретарь семинар семинарист семинаристка семена серость сервис сервант сервер сервировка сервитут серна сестра сестрёнка сестринство сернистость сеанс сенат сенатор сенаторка сенаторство сенсор сенсорика сенсорность сено сенокос сенокоска сенник сени синева синеватость синтаксис синус синтетика синтетик ситком сито ситник система системник систематика систематик системность скат скатка скатерть сквер скверик скверность скверна скверник сквот сквоттер сквоттерство скорость скоростник скоростность скот скотина скотинка скотник скотство скан сканер сканерист сканеристка сканирование скакун скаут скаутер скука скукота скутер скутерист скутеристка смех смехотун смета сметанка сметана сметанник смесовка смена сменка сменовка сменник сменность смерть смертность смертник смотр смотрение смута смутность смутник снос сноска сносность сон сонм сонник соната сонатина сонет сонетист сорт сортир сортировка сортовка соска сосок сосиски сосна сосенка сосновка сосновик сосновник состав составность стан станок старина старинка староста старость старт статус статусность статусник статут стена стерва стерин стих стихи".split()
+          m = dict(zip("авеёикмнорстухь", "aBeeyKMHoPCTyXb"))
+          m.update({"и":"u","у":"y"})
+          candidates = []
+          seen = set()
+          for word in words:
+              if any(c not in m for c in word): continue
+              nick = "".join(m[c] for c in word)
+              if not (3 <= len(nick) <= 16): continue
+              if nick.casefold() in seen: continue
+              seen.add(nick.casefold())
+              candidates.append((word,nick))
+          print("CANDIDATE_COUNT|"+str(len(candidates)),flush=True)
+          control = ["Notch","jeb_"]
           base = "https://api.minecraftservices.com/minecraft/profile/lookup/bulk/byname"
           found, failed = set(), []
-          allnames = control + names
+          allnames = control + [nick for word,nick in candidates]
           for idx in range(0,len(allnames),10):
               chunk = allnames[idx:idx+10]
               for attempt in range(3):
                   try:
                       req = urllib.request.Request(base,json.dumps(chunk).encode(),{"User-Agent":"minecraft-audit/1.0","Content-Type":"application/json"},method="POST")
-                      with urllib.request.urlopen(req,timeout=15) as resp:
+                      with urllib.request.urlopen(req,timeout=16) as resp:
                           items = json.load(resp)
                       if not isinstance(items,list): raise ValueError("non-list")
-                      batch = {x["name"].lower() for x in items}
+                      batch = {x["name"].casefold() for x in items}
                       found |= batch
                       print(f"BATCH_OK|{idx//10}|"+",".join(sorted(batch)),flush=True)
                       break
                   except Exception as e:
                       print(f"BATCH_ERROR|{idx//10}|{str(e)[:120]}",flush=True)
-                      if attempt<2: time.sleep(1)
+                      if attempt<2: time.sleep(2)
               else: failed.extend(chunk)
-          for n in names:
-              status = "ERROR" if n in failed else "TAKEN" if n.lower() in found else "NO_PROFILE"
-              print(f"RESULT|{n}|{status}",flush=True)
-          print(f"SUMMARY|{len(names)}|{sum(x.lower() in found for x in names)}|{len(failed)}",flush=True)
-          if not set(x.lower() for x in control) <= found: sys.exit(2)
+          for word,nick in candidates:
+              status = "ERROR" if nick in failed else "TAKEN" if nick.casefold() in found else "NO_PROFILE"
+              print(f"RESULT|{word}|{nick}|{status}",flush=True)
+          print(f"SUMMARY|{len(candidates)}|{sum(nick.casefold() in found for word,nick in candidates)}|{len(failed)}",flush=True)
+          if not set(x.casefold() for x in control) <= found: sys.exit(2)
           if failed: sys.exit(3)
           PY
