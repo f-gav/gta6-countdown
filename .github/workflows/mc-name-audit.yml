@@ -1,32 +1,32 @@
-name: Minecraft extended media-name availability check
+name: Minecraft extended fictional names v2
 on:
   push:
     branches: [name-audit-20261116]
     paths:
-      - '.github/scripts/mc-media-source.py'
+      - '.github/scripts/mc-media-expand.py'
       - '.github/workflows/mc-name-audit.yml'
 permissions:
   contents: write
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 28
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Collect sourced fictional names and check existing Minecraft profiles
-        run: python .github/scripts/mc-media-source.py
-      - name: Publish results on isolated branch
+      - name: Collect wiki categories and check new names
+        run: python .github/scripts/mc-media-expand.py
+      - name: Publish checked names in isolated branch
         run: |
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-          git add out/expanded_media_new.tsv out/expanded_media_new.txt out/expanded_media_all.txt out/expanded_media_report.json
-          git commit -m "data: checked new media names, excluding occupied profiles [skip ci]"
+          git add out/expanded_media_added_round2.txt out/expanded_media_added_round2.tsv out/expanded_media_all_v2.txt out/expanded_media_report_v2.json
+          git commit -m "data: fictional names from wikipages verified against Minecraft [skip ci]"
           git push
       - uses: actions/upload-artifact@v4
         with:
-          name: extended-minecraft-media-names
+          name: minecraft-media-expanded-v2
           path: |
-            out/expanded_media_new.tsv
-            out/expanded_media_new.txt
-            out/expanded_media_all.txt
-            out/expanded_media_report.json
+            out/expanded_media_added_round2.txt
+            out/expanded_media_added_round2.tsv
+            out/expanded_media_all_v2.txt
+            out/expanded_media_report_v2.json
