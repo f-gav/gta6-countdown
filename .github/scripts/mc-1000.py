@@ -2,8 +2,8 @@ import json, re, sys, time, urllib.request, collections
 from wordfreq import top_n_list
 import pymorphy3
 
-MAX_WORDS=240000
-PER_LETTER=180
+MAX_WORDS=85000
+PER_LETTER=120
 TARGET=1000
 # Visual Latin substitutions for the complete Russian alphabet.
 MAPPING={
