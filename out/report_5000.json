@@ -1,0 +1,41 @@
+{
+  "checked": 7190,
+  "no_profile": 5120,
+  "registered_profiles_found": 2070,
+  "failed_checks": 0,
+  "selected": 5000,
+  "selected_initials": {
+    "а": 390,
+    "в": 368,
+    "е": 107,
+    "з": 433,
+    "и": 433,
+    "к": 305,
+    "м": 306,
+    "н": 391,
+    "о": 425,
+    "р": 353,
+    "с": 332,
+    "т": 340,
+    "у": 432,
+    "х": 385
+  },
+  "candidate_counts": {
+    "а": 1974,
+    "в": 1815,
+    "е": 137,
+    "з": 1434,
+    "и": 970,
+    "к": 4137,
+    "м": 2685,
+    "н": 1694,
+    "о": 1558,
+    "р": 2147,
+    "с": 4222,
+    "т": 2465,
+    "у": 787,
+    "х": 924
+  },
+  "claim": "NO_PROFILE (not guaranteed AVAILABLE)",
+  "source": "official public Minecraft Services profile lookup"
+}
