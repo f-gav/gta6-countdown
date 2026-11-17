@@ -29,7 +29,7 @@ common=top_n_list("ru",600000)
 ranks={w:n for n,w in enumerate(common)}
 print("FREQ|"+str(len(common)),flush=True)
 source=MORPH.dictionary.words
-print("DAWG|"+type(source).__name__+"|"+str(len(source)),flush=True)
+print("DAWG|"+type(source).__name__+"|"+str(type(source).__name__),flush=True)
 
 # Morphology parses only words with glyphs that visually match the requested Latin characters.
 selected={}
