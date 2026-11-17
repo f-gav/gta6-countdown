@@ -13,5 +13,20 @@
     "Прилагательные": 354
   },
   "dictionary_forms": 13854,
-  "unique_lemmas": 10710
+  "unique_lemmas": 10710,
+  "compounds_filtered": [
+    "завком",
+    "завсектором",
+    "замзава",
+    "замнарком",
+    "зверосовхоз",
+    "ивановоавтотранс",
+    "омскавтотранс",
+    "откормсовхоз",
+    "хакасавтотранс",
+    "химавтоматика"
+  ],
+  "verified_replacements": 10,
+  "api_errors_replacements": 0,
+  "unique_additional_lemmas": true
 }
