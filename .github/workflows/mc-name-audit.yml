@@ -1,32 +1,32 @@
-name: Minecraft Nickoteka 5000 verified name expansion
+name: Nickoteka quality control and verified replacements
 on:
   push:
     branches: [name-audit-20261116]
     paths:
-      - '.github/scripts/mc-expand-to-5000.py'
+      - '.github/scripts/mc-expand-fill.py'
       - '.github/workflows/mc-name-audit.yml'
 permissions:
   contents: write
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-      - name: Install Russian morphology and word frequency datasets
+      - name: Install morphology dictionary and frequency data
         run: python -m pip install --disable-pip-version-check wordfreq pymorphy3
-      - name: Generate nominative words and check Minecraft profiles
-        run: python .github/scripts/mc-expand-to-5000.py
-      - name: Publish checked results on isolated analysis branch
+      - name: Replace contracted words with newly checked legitimate names
+        run: python .github/scripts/mc-expand-fill.py
+      - name: Publish cleaned data on isolated audit branch
         run: |
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git add out/expanded_to_5000_additions.tsv out/expanded_to_5000_additions.txt out/expanded_to_5000_all.txt out/expanded_to_5000_report.json
-          git commit -m "data: checked nominative additions to Nickoteka [skip ci]"
+          git commit -m "data: quality-filter contracted forms and verify replacements [skip ci]"
           git push
       - uses: actions/upload-artifact@v4
         with:
-          name: nickoteka-5000-nominative-verified
+          name: nickoteka-5000-quality-audited
           path: |
             out/expanded_to_5000_additions.tsv
             out/expanded_to_5000_additions.txt
