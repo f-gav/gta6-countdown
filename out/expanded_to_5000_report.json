@@ -1,0 +1,17 @@
+{
+  "previous_total": 2952,
+  "new_checked_no_profiles": 2048,
+  "total": 5000,
+  "checked_attempted_successfully": 3820,
+  "registered_profiles_found": 1769,
+  "failed_api_batches": 0,
+  "available_claim_not_guaranteed": true,
+  "new_groups": {
+    "Существительные": 850,
+    "Места": 301,
+    "Имена": 543,
+    "Прилагательные": 354
+  },
+  "dictionary_forms": 13854,
+  "unique_lemmas": 10710
+}
